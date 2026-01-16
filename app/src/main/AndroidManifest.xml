@@ -40,8 +40,20 @@
 
         <service
             android:name=".playback.MusicPlaybackService"
-            android:exported="false"
+            android:exported="true"
             android:foregroundServiceType="mediaPlayback">
+
+        <intent-filter>
+            <action android:name="com.sourajitk.ambient_music.ACTION_TOGGLE_PLAYBACK_QS" />
+            <action android:name="com.sourajitk.ambient_music.ACTION_SKIP_TO_NEXT" />
+            <action android:name="com.sourajitk.ambient_music.ACTION_STOP_SERVICE" />
+            <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_CHILL" />
+            <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_CALM" />
+            <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_SLEEP" />
+            <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_PRODUCTIVITY" />
+            <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_SERENITY" />
+        </intent-filter>
+
         <property
             android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
             android:value="system_exempted" />
