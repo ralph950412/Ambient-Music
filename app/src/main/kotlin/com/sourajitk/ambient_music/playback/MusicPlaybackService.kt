@@ -64,6 +64,8 @@ class MusicPlaybackService : MediaLibraryService() {
         const val ACTION_PLAY_GENRE_FOCUS = "com.sourajitk.ambient_music.ACTION_PLAY_GENRE_PRODUCTIVITY"
         const val ACTION_PLAY_GENRE_SERENITY = "com.sourajitk.ambient_music.ACTION_PLAY_GENRE_SERENITY"
         const val ACTION_START_IDLE = "com.sourajitk.ambient_music.ACTION_START_IDLE"
+        const val ACTION_GET_PLAYBACK_STATUS = "com.sourajitk.ambient_music.ACTION_GET_PLAYBACK_STATUS"
+        const val ACTION_PLAYBACK_STATUS = "com.sourajitk.ambient_music.ACTION_PLAYBACK_STATUS"
         private const val NOTIFICATION_ID = 1
         private const val NOTIFICATION_CHANNEL_ID = "MusicPlaybackChannel"
         private const val TAG = "MusicPlaybackService"
@@ -135,6 +137,7 @@ class MusicPlaybackService : MediaLibraryService() {
                         }
                         updateNotification()
                         TileStateUtil.requestTileUpdate(applicationContext)
+                        sendStatusBroadcast()
                     }
                     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                         super.onMediaItemTransition(mediaItem, reason)
@@ -161,6 +164,7 @@ class MusicPlaybackService : MediaLibraryService() {
                         isServiceCurrentlyPlaying = false
                         updateNotification()
                         TileStateUtil.requestTileUpdate(applicationContext)
+                        sendStatusBroadcast()
                     }
                 })
             }
@@ -401,8 +405,20 @@ class MusicPlaybackService : MediaLibraryService() {
             ACTION_START_IDLE -> {
                 startForeground(NOTIFICATION_ID, createNotification())
             }
+            ACTION_GET_PLAYBACK_STATUS -> {
+                sendStatusBroadcast()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun sendStatusBroadcast() {
+        val intent = Intent(ACTION_PLAYBACK_STATUS).apply {
+            putExtra("is_playing", isServiceCurrentlyPlaying)
+            putExtra("genre", currentPlaylistGenre)
+        }
+        sendBroadcast(intent)
+        Log.d(TAG, "Sent status broadcast: is_playing=$isServiceCurrentlyPlaying, genre=$currentPlaylistGenre")
     }
 
     /**
@@ -439,6 +455,7 @@ class MusicPlaybackService : MediaLibraryService() {
         exoPlayer?.prepare()
         exoPlayer?.play()
         isPlaylistSet = true
+        sendStatusBroadcast()
     }
 
     private fun prepareAndSetPlaylist(playRandom: Boolean = false) {
@@ -490,6 +507,7 @@ class MusicPlaybackService : MediaLibraryService() {
         // Playback will be started by togglePlayback if it was called to initiate
         isPlaylistSet = true
         Log.i(TAG, "Playlist with ${mediaItems.size} items set. Starting at index $startIndex.")
+        sendStatusBroadcast()
     }
 
     private fun togglePlayback() {
@@ -517,6 +535,7 @@ class MusicPlaybackService : MediaLibraryService() {
         isPlaylistSet = false
         currentAlbumArt = null
         currentPlaylistGenre = null
+        sendStatusBroadcast()
     }
 
     // Fetch artwork from a URL asynchronously

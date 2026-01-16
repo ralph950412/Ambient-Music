@@ -52,6 +52,14 @@
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaLibraryService" />
                 <action android:name="android.media.browse.MediaBrowserService" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_TOGGLE_PLAYBACK_QS" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_SKIP_TO_NEXT" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_STOP_SERVICE" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_CHILL" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_CALM" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_SLEEP" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_PRODUCTIVITY" />
+                <action android:name="com.sourajitk.ambient_music.ACTION_PLAY_GENRE_SERENITY" />
             </intent-filter>
         </service>
 
@@ -125,6 +133,14 @@
             android:name=".util.SleepTimerService"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
+
+        <receiver
+            android:name=".playback.PlaybackStatusReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.sourajitk.ambient_music.ACTION_GET_PLAYBACK_STATUS" />
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>
